@@ -1,17 +1,19 @@
 import Navbar from "@/Components/Navbar";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
+import { useRouter } from "next/router";
 
 export default async function PrivateLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token");
+  const router = useRouter()
+   const { isAuthenticated } = await auth();
 
-  if (!token) {
-    redirect("/login");
+  if (!isAuthenticated) {
+    router.push("/login");
   }
 
   return (
